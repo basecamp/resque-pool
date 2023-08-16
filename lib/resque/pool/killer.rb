@@ -29,7 +29,7 @@ module Resque
       RESQUE_POOL_PIDS = /
         ^\s*(\d+)                         # PID digits, optional leading spaces
         \s+                               # column divider
-        #{Regexp.escape(PROCLINE_PREFIX)} # exact match at start of command
+        #{Regexp.escape("#{PROCLINE_PREFIX}[bc3-")} # exact match at start of command - 37s custom, see the BC4 Gemfile
       /x
 
       def parse_pids_from_output(output)
