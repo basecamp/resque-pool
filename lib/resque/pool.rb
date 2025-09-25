@@ -12,7 +12,9 @@ require 'yaml'
 module Resque
   class Pool
     SIG_QUEUE_MAX_SIZE = 5
-    DEFAULT_WORKER_INTERVAL = 5
+    DEFAULT_WORKER_MAX_INTERVAL = 5
+    DEFAULT_WORKER_MIN_INTERVAL = 5
+    DEFAULT_WORKER_BACKOFF_INTERVAL = 0.1
     QUEUE_SIGS = [ :QUIT, :INT, :TERM, :USR1, :USR2, :CONT, :HUP, :WINCH, Signal.signame(29).to_sym ]
     CHUNK_SIZE = (16 * 1024)
 
@@ -432,7 +434,7 @@ module Resque
         call_after_prefork!(worker)
         reset_sig_handlers!
         #self_pipe.each {|io| io.close }
-        worker.work(ENV['INTERVAL'] || DEFAULT_WORKER_INTERVAL) # interval, will block
+        worker.work(ENV['INTERVAL'] || ENV['MAX_INTERVAL'] || DEFAULT_WORKER_MAX_INTERVAL, ENV['MIN_INTERVAL'] || DEFAULT_WORKER_MIN_INTERVAL, ENV['BACKOFF_INTERVAL'] || DEFAULT_WORKER_BACKOFF_INTERVAL) # interval, will block
       end
       workers[queues][pid] = worker
       call_after_spawn!(worker, pid, workers)
